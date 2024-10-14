@@ -1,0 +1,38 @@
+doctype html 
+html 
+    head
+    title="Fried Chicken"
+    link(rel='stylesheet', href='/styles.css')
+    script(src='/index.js' defer)
+    body
+        h1= "Fried Chicken Hot Spots"
+        div(class='selContainer')
+         select(name='restaurant' id='restaurants')
+          each val in restaurants 
+            option(value=val.id)= val.name 
+         button(id="submit") Submit
+        #restInfo
+         if restaurant
+          h2= restaurant.name 
+          div 
+           p= `Location: ${restaurant.location}`
+           p= `Type: ${restaurant.type}`
+           p= `Rating: ${restaurant.rating}`
+           p= `Price Range: ${restaurant.priceRange}`
+           p= "Specialties:"
+           ul 
+            each specialty in restaurant.specialties 
+             li= specialty
+          div
+           button(id='review' value=`${restaurant.id}`) Review 
+           button(id='chicken' value=`${restaurant.id}`) Chicken
+        #generalInfo
+         if review
+          h2= "Edit Review"
+          input(type='number' value=`${review.rating}` id="rating" name="rating" min="1" max="5" step=0.1)
+          textarea(name="review" id="reviewContent" rows="5"
+          cols="30")= review.reviewText
+          button(id="save" value=`${review.reviewId}`) Save
+         
+         
+         
