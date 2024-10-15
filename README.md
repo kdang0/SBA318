@@ -9,3 +9,5 @@
     * Reviews
 * CRUD (POST,GET,PATCH,DELETE) operations on reviews
 * GET on both restaurant and fried chicken
+# How to use
+* Start app => npm start
