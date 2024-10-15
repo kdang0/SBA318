@@ -50,6 +50,7 @@ function createReviewPanel(data, id) {
   cols="30"
   placeholder="Write your review"></textarea>
             <button id="submitReview" value=${id}>Submit</button>
+            <button id="filterReview" value="Ken Wayne">See your own reviews</button>
         </div>
     `;
   genContainer.innerHTML += reviewForm;
@@ -105,10 +106,9 @@ addGlobalEventListener("click", "#submitReview", async (e) => {
 
   const rating = document.getElementById("rating");
   const content = document.getElementById("reviewContent");
-  const button = document.getElementById("submitReview");
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  const result = await fetch(`/reviews/restaurant/${button.value}`, {
+  const result = await fetch(`/reviews/restaurant/${e.target.value}`, {
     method: "POST",
     body: JSON.stringify({ review: content.value, rating: rating.value }),
     headers: myHeaders,
@@ -191,3 +191,15 @@ addGlobalEventListener('click', '#chicken', async(e) => {
         createChickenPanel(data);
     }
 });
+
+
+//FILTER REQUEST
+addGlobalEventListener('click', '#filterReview', async(e) => {
+    e.preventDefault();
+    const restId = document.getElementById("chicken");
+    const result = await fetch(`http://localhost:4500/reviews/restaurant/${restId.value}?reviewName=${e.target.value}`);
+    const data = await result.json();
+    if(data){
+        createReviewPanel(data, restId.value);
+    }
+})

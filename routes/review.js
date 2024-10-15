@@ -5,18 +5,21 @@ import {error} from "../utils/error.js"
 const reviewRouter = Router();
 
 reviewRouter.get('/restaurant/:id', (req,res)=> {
-    console.log(req.params.id);
-    const reviews = reviewsData.filter((review) => review.restaurantId == req.params.id);
-    if(reviews.length > 0){
+    const filteredName = req.query["reviewName"];
+    if(filteredName){
+        const reviews = reviewsData.filter((review) => review.customerName == filteredName);
         res.json(reviews);
     } else{
-        console.log("nothing");
+        const reviews = reviewsData.filter((review) => review.restaurantId == req.params.id);
+        if(reviews.length > 0){
+            res.json(reviews);
+        } else{
+            next(error(404, "Resource not found"));
+        }
     }
 });
 
 reviewRouter.post('/restaurant/:id', (req,res) => {
-    console.log(req.body);
-    console.log(req.params.id);
     try{
         if(req.body.review && req.body.rating && req.params.id){
             const review = {
