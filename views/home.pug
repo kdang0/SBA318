@@ -10,11 +10,11 @@ html
          select(name='restaurant' id='restaurants')
           each val in restaurants 
             option(value=val.id)= val.name 
-         button(id="submit") Submit
+         button(id="submit") Search
         #restInfo
          if restaurant
           h2= restaurant.name 
-          div 
+          div(class="restContainer") 
            p= `Location: ${restaurant.location}`
            p= `Type: ${restaurant.type}`
            p= `Rating: ${restaurant.rating}`

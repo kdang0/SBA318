@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import { reviewsData } from '../data/review.js';
 import { restaurantsData } from '../data/restaurant.js';
+import {error} from "../utils/error.js"
 const reviewRouter = Router();
 
 reviewRouter.get('/restaurant/:id', (req,res)=> {
@@ -16,20 +17,25 @@ reviewRouter.get('/restaurant/:id', (req,res)=> {
 reviewRouter.post('/restaurant/:id', (req,res) => {
     console.log(req.body);
     console.log(req.params.id);
-    if(req.body.review && req.body.rating && req.params.id){
-        const review = {
-            customerName: 'Ken Wayne',
-            reviewId: reviewsData.length + 1,
-            reviewText: req.body.review,
-            date: "2024-10-13",
-            rating: req.body.rating,
-            restaurantId: req.params.id
+    try{
+        if(req.body.review && req.body.rating && req.params.id){
+            const review = {
+                customerName: 'Ken Wayne',
+                reviewId: reviewsData.length + 1,
+                reviewText: req.body.review,
+                date: "2024-10-13",
+                rating: req.body.rating,
+                restaurantId: req.params.id
+            }
+            reviewsData.push(review);
+            res.json(review);
         }
-        reviewsData.push(review);
-        res.json(review);
-    }
-    else {
-        return res.status(404).send();
+        else {
+            throw new Error("Please fill out your review properly")
+        }
+
+    } catch(err){
+        res.json({error:err});
     }
 });
 
@@ -44,7 +50,7 @@ reviewRouter.delete('/:id', (req,res) => {
         });
         if(review) res.json(review);
     }  else {
-        return res.status(404).send();
+        next(error(404, "Resource not found"));
     }
 });
 
@@ -57,7 +63,7 @@ reviewRouter.get('/:id', (req,res) => {
             restaurants: restaurantsData
         });
     } else {
-        return res.status(404).send();
+        next(error(404, "Resource not found"));
     }
 });
 

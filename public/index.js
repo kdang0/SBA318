@@ -24,10 +24,12 @@ function createReviewPanel(data, id) {
   genContainer.appendChild(reviewsContainer);
   for (review of data) {
     const reviewPanel = `  
-            <div>
+            <div class="reviewContainer">
                 <h3>${review.customerName}</h3>
-                <p>${review.rating} stars</p>
-                <p>${review.date}</p>
+                <div class="dateRate">
+                    <p>${review.rating} stars</p>
+                    <p>${review.date}</p>
+                </div>
                 <p>${review.reviewText}</p>
             </div>
             `;
@@ -36,14 +38,18 @@ function createReviewPanel(data, id) {
 
   const reviewForm = `
         <div id="form">
-         <input type="number" id="rating" name="rating" min="1" max="5" step=0.1>
+         <div>
+         <label for="rating">Rating:</label>
+         <input type="number" id="rating" name="rating" min="1" max="5" 
+         step=0.1>
+         </div>
             <textarea
   name="review"
   id="reviewContent"
   rows="5"
   cols="30"
-  placeholder="Comment text."></textarea>
-            <button id="submitReview" value=${id}>Review</button>
+  placeholder="Write your review"></textarea>
+            <button id="submitReview" value=${id}>Submit</button>
         </div>
     `;
   genContainer.innerHTML += reviewForm;
@@ -109,17 +115,21 @@ addGlobalEventListener("click", "#submitReview", async (e) => {
   });
   const data = await result.json();
   console.log(data);
-  if (data) {
+  if (data && !('error' in data)) {
     content.value = "";
     rating.value = "";
     const reviewPanel = `
-            <div id="review${data.reviewId}">
+            <div id="review${data.reviewId}" class="reviewContainer">
                 <h3>${data.customerName}</h3>
-                <p>${data.rating} stars</p>
-                <p>${data.date}</p>
+                <div class="dateRate">
+                    <p>${data.rating} stars</p>
+                    <p>${data.date}</p>
+                </div>
                 <p>${data.reviewText}</p>
-                <button id="edit" value=${data.reviewId}>Edit</button>
-                <button id="delete" value=${data.reviewId}>Delete</button>
+                <div>
+                  <button id="edit" value=${data.reviewId}>Edit</button>
+                  <button id="delete" value=${data.reviewId}>Delete</button>
+                </div>
             </div>
             `;
     const reviewContainer = document.getElementById("reviewsContainer");
@@ -127,6 +137,7 @@ addGlobalEventListener("click", "#submitReview", async (e) => {
   }
 });
 
+//DELETE RESTAURANT REVIEW
 addGlobalEventListener("click", "#delete", async (e) => {
     e.preventDefault();
     const myHeaders = new Headers();
@@ -141,14 +152,14 @@ addGlobalEventListener("click", "#delete", async (e) => {
     if(reviewContainer) reviewContainer.remove();
 });
 
-
+//Send to editing page
 addGlobalEventListener('click', '#edit', async(e) => {
     e.preventDefault();
     console.log(e.target.value);
     window.location.href=`http://localhost:4500/reviews/${e.target.value}`;
 });
 
-
+//PATCH RESTAURANT REVIEW
 addGlobalEventListener('click', '#save', async(e)=> {
     e.preventDefault();
     const rating = document.getElementById("rating");
@@ -168,6 +179,9 @@ addGlobalEventListener('click', '#save', async(e)=> {
 
 });
 
+
+
+//GET CHICKEN 
 addGlobalEventListener('click', '#chicken', async(e) => {
     e.preventDefault();
     const button = document.getElementById("chicken");
@@ -176,4 +190,4 @@ addGlobalEventListener('click', '#chicken', async(e) => {
     if(data){
         createChickenPanel(data);
     }
-})
+});
